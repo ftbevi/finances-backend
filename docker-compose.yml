@@ -1,0 +1,31 @@
+version: '3.4'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./dockerfile
+    container_name: finances-server
+    env_file:
+      - ".env"
+    volumes:
+      - .:/server
+    ports:
+      - "6600:6600"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14-bullseye
+    container_name: finances-db
+    environment:
+      POSTGRES_USER: "finances"
+      POSTGRES_PASSWORD: "finances"
+      POSTGRES_DB: "finances"
+    ports:
+      - "5498:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data/
+
+volumes:
+  data:
