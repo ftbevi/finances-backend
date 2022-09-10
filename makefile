@@ -38,6 +38,13 @@ dbunaccent:
 # dump:
 # 	docker-compose run web python manage.py dumpdata --format=json auth.user > finances/store/fixtures/auth.json
 # 	docker-compose run web python manage.py dumpdata --format=json store > finances/store/fixtures/store.json
+precommit:
+	pre-commit install
+	pre-commit autoupdate
+
+lint:
+	docker-compose run --rm  web autoflake -i -r --remove-all-unused-imports --remove-unused-variables --ignore-init-module-imports .
+	docker-compose run --rm  web isort -rc --atomic --multi-line=3 --trailing-comma --force-grid-wrap=0 --use-parentheses --line-width=88 .
 
 services:
 	docker-compose up -d db
