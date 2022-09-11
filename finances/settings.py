@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "drf_yasg",
     "django_filters",
+    "whitenoise.runserver_nostatic",
     # system apps
     "finances.accounts",
     "finances.wallets",
@@ -47,6 +48,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "finances.urls"
@@ -110,12 +112,42 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-STATIC_ROOT = os.path.join(os.path.dirname(PROJECT_ROOT), "statics")
-STATIC_URL = "/statics/"
+PROJECT_ENVIRONMENT = config("PROJECT_ENVIRONMENT")
+if PROJECT_ENVIRONMENT == "local":
+    # Static files (CSS, JavaScript, Images)
+    STATIC_ROOT = os.path.join(os.path.dirname(PROJECT_ROOT), "statics")
+    STATIC_URL = "/statics/"
+    MEDIA_ROOT = os.path.join(os.path.dirname(PROJECT_ROOT), "media")
+    MEDIA_URL = "/media/"
+elif PROJECT_ENVIRONMENT == "develop":
+    ALLOWED_HOSTS = [
+        "0.0.0.0",
+        "localhost",
+        "127.0.0.1",
+        "finances-wallet.herokuapp.com",
+    ]
+    DEBUG = False
+    # database in heroku
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=config(
+                "postgres://pllwpertwgonrx:bb6d4fe2e5fe69d28723176fc244c9b1c55d5b2c7b29183ca601838b255bcabb@ec2-35-168-122-84.compute-1.amazonaws.com:5432/d8tv91h51qbjue"
+            )
+        )
+    }
+    db_from_env = dj_database_url.config(conn_max_age=600)
+    DATABASES["default"].update(db_from_env)
+    # static and media files in heroku
+    STATIC_ROOT = BASE_DIR / "staticfiles"
+    STATIC_URL = "static/"
+    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+    MEDIA_URL = "/media/"
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    # activate django-heroku.
+    import django_heroku
 
-MEDIA_ROOT = os.path.join(os.path.dirname(PROJECT_ROOT), "media")
-MEDIA_URL = "/media/"
+    django_heroku.settings(locals())
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
