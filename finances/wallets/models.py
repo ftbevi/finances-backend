@@ -1,7 +1,8 @@
-from django.core.exceptions import ValidationError
 from django.db import models
 
 from finances.accounts.models import BaseModel, User
+
+from .validations import TransactionValidations
 
 
 class TransactionType:
@@ -45,10 +46,5 @@ class Transaction(BaseModel):
         return f"{self.title}"
 
     def save(self, *args, **kwargs):
-        Transaction.validate_negative_amount(self.amount)
+        TransactionValidations.validate_negative_amount(self.amount)
         super().save(*args, **kwargs)
-
-    @classmethod
-    def validate_negative_amount(self, amount):
-        if amount < 0:
-            raise ValidationError(f"{self.amount} is not an monetary valid number")

@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_extensions",
     "drf_yasg",
+    "django_filters",
     # system apps
     "finances.accounts",
     "finances.wallets",
@@ -67,6 +68,7 @@ TEMPLATES = [
 ]
 
 REST_FRAMEWORK = {
+    "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
 }
