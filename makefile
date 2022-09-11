@@ -9,7 +9,7 @@ clean:
 	sudo rm -rf statics/
 
 createsuperuser:
-	docker-compose run web python manage.py shell -c "from django.contrib.auth.models import User; \
+	docker-compose run web python manage.py shell -c "from finances.accounts.models import User; \
 	u, _ = User.objects.get_or_create(email='dev@finances.co'); \
 	u.username = 'dev'; \
 	u.set_password('finances@#2022'); \
@@ -31,13 +31,14 @@ dbupdate: migrations migrate
 dbunaccent:
 	docker-compose exec db psql -U finances -c "CREATE EXTENSION IF NOT EXISTS UNACCENT;"
 
-# fixtures:
-# 	docker-compose run --rm web python manage.py loaddata finances/store/fixtures/auth.json
-# 	docker-compose run --rm web python manage.py loaddata finances/store/fixtures/store.json
+fixtures:
+	docker-compose run --rm web python manage.py loaddata tests/fixtures/users/user.json
+	docker-compose run --rm web python manage.py loaddata tests/fixtures/transactions/transaction.json
 
-# dump:
-# 	docker-compose run web python manage.py dumpdata --format=json auth.user > finances/store/fixtures/auth.json
-# 	docker-compose run web python manage.py dumpdata --format=json store > finances/store/fixtures/store.json
+dump:
+	docker-compose run --rm web python manage.py dumpdata accounts.user --indent=2 --format=json > tests/fixtures/users/user.json
+	docker-compose run --rm web python manage.py dumpdata wallets.transaction --indent=2 --format=json > tests/fixtures/transactions/transaction.json
+
 precommit:
 	pre-commit install
 	pre-commit autoupdate
