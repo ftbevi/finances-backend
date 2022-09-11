@@ -1,8 +1,11 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
 class BaseModel(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     created_at = models.DateTimeField(verbose_name="Criado às", auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name="Atualizado às", auto_now=True)
     deleted_at = models.DateTimeField(
