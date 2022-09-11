@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     "drf_yasg",
     # system apps
     "finances.accounts",
-    "finances.wallet",
+    "finances.wallets",
 ]
 
 MIDDLEWARE = [
