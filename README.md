@@ -1,4 +1,4 @@
-# Management Invetiment
+# Management Finances
 
 Challenge project for backend developer.
 
@@ -78,7 +78,7 @@ make clean
 - ipdb
 - django extensions
 - ipython
-- factory-boy 
-- pytest-factoryboy 
-- dj-database-url 
-- python-decouple 
+- factory-boy
+- pytest-factoryboy
+- dj-database-url
+- python-decouple
