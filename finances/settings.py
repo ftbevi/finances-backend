@@ -120,21 +120,11 @@ if PROJECT_ENVIRONMENT == "local":
     MEDIA_ROOT = os.path.join(os.path.dirname(PROJECT_ROOT), "media")
     MEDIA_URL = "/media/"
 elif PROJECT_ENVIRONMENT == "develop":
-    ALLOWED_HOSTS = [
-        "0.0.0.0",
-        "localhost",
-        "127.0.0.1",
-        "finances-wallet.herokuapp.com",
-    ]
-    DEBUG = False
+    # activate django-heroku.
+    import django_heroku
+
+    django_heroku.settings(locals())
     # database in heroku
-    DATABASES = {
-        "default": dj_database_url.config(
-            default=config(
-                "postgres://pllwpertwgonrx:bb6d4fe2e5fe69d28723176fc244c9b1c55d5b2c7b29183ca601838b255bcabb@ec2-35-168-122-84.compute-1.amazonaws.com:5432/d8tv91h51qbjue"
-            )
-        )
-    }
     db_from_env = dj_database_url.config(conn_max_age=600)
     DATABASES["default"].update(db_from_env)
     # static and media files in heroku
@@ -143,10 +133,6 @@ elif PROJECT_ENVIRONMENT == "develop":
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
     MEDIA_URL = "/media/"
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-    # activate django-heroku.
-    import django_heroku
-
-    django_heroku.settings(locals())
 
 
 # Default primary key field type
