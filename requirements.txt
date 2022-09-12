@@ -3,7 +3,7 @@ astroid==2.12.9
 asttokens==2.0.8
 autoflake==1.5.3
 backcall==0.2.0
-backports.zoneinfo==0.2.1;python_version<"3.9"
+backports.zoneinfo==0.2.1
 certifi==2022.6.15.1
 cfgv==3.3.1
 charset-normalizer==2.1.1
@@ -22,6 +22,7 @@ drf-yasg==1.21.3
 executing==1.0.0
 filelock==3.8.0
 flake8==5.0.4
+gunicorn==20.1.0
 identify==2.5.5
 idna==3.3
 inflection==0.5.1
