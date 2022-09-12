@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Sum
 
 from finances.accounts.models import BaseModel, User
 
@@ -48,3 +49,21 @@ class Transaction(BaseModel):
     def save(self, *args, **kwargs):
         TransactionValidations.validate_negative_amount(self.amount)
         super().save(*args, **kwargs)
+
+    @classmethod
+    def balance(self, user):
+        invoices = (
+            Transaction.objects.filter(
+                owner=user, transaction_type=TransactionType.INVOICE
+            )
+            .aggregate(invoices_totals=Sum("amount"))
+            .get("invoices_totals")
+        )
+        revenue = (
+            Transaction.objects.filter(
+                owner=user, transaction_type=TransactionType.REVENUE
+            )
+            .aggregate(revenue_totals=Sum("amount"))
+            .get("revenue_totals")
+        )
+        return {"invoices": invoices, "revenue": revenue, "balance": revenue - invoices}
