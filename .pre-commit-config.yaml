@@ -11,8 +11,8 @@ repos:
       - id: check-merge-conflict
       - id: debug-statements
       - id: end-of-file-fixer
-      - id: name-tests-test
-        args: [ "--django" ]
+      # - id: name-tests-test
+        # args: [ "--django" ]
       - id: trailing-whitespace
   - repo: https://github.com/pycqa/bandit
     rev: 1.7.4
