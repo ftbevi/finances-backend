@@ -7,6 +7,7 @@ clean:
 	docker-compose kill && docker-compose down --rmi all
 	sudo rm -rf data/
 	sudo rm -rf statics/
+	sudo rm -rf .pytest_cache/
 
 createsuperuser:
 	docker-compose run web python manage.py shell -c "from finances.accounts.models import User; \
@@ -32,20 +33,20 @@ dbunaccent:
 	docker-compose exec db psql -U finances -c "CREATE EXTENSION IF NOT EXISTS UNACCENT;"
 
 fixtures:
-	docker-compose run --rm web python manage.py loaddata tests/fixtures/users/user.json
-	docker-compose run --rm web python manage.py loaddata tests/fixtures/transactions/transaction.json
+	docker-compose run --rm web python manage.py loaddata finances/tests/fixtures/users/user.json
+	docker-compose run --rm web python manage.py loaddata finances/tests/fixtures/transactions/transaction.json
 
 dump:
-	docker-compose run --rm web python manage.py dumpdata accounts.user --indent=2 --format=json > tests/fixtures/users/user.json
-	docker-compose run --rm web python manage.py dumpdata wallets.transaction --indent=2 --format=json > tests/fixtures/transactions/transaction.json
+	docker-compose run --rm web python manage.py dumpdata accounts.user --indent=2 --format=json > finances/tests/fixtures/users/user.json
+	docker-compose run --rm web python manage.py dumpdata wallets.transaction --indent=2 --format=json > finances/tests/fixtures/transactions/transaction.json
 
 precommit:
 	pre-commit install
 	pre-commit autoupdate
 
 lint:
-	docker-compose run --rm  web autoflake -i -r --remove-all-unused-imports --remove-unused-variables --ignore-init-module-imports .
-	docker-compose run --rm  web isort -rc --atomic --multi-line=3 --trailing-comma --force-grid-wrap=0 --use-parentheses --line-width=88 .
+	docker-compose run --rm web autoflake -i -r --remove-all-unused-imports --remove-unused-variables --ignore-init-module-imports .
+	docker-compose run --rm web isort -rc --atomic --multi-line=3 --trailing-comma --force-grid-wrap=0 --use-parentheses --line-width=88 .
 
 services:
 	docker-compose up -d db
@@ -54,6 +55,9 @@ setup: build services dbupdate dbunaccent createsuperuser statics
 
 bash:
 	docker-compose run --rm $(ARGS) sh
+
+test:
+	docker-compose run --rm web pytest
 
 shell_plus:
 	docker-compose run --rm web python manage.py shell_plus
