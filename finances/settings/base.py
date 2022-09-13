@@ -8,7 +8,7 @@ from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Project path.
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config("SECRET_KEY")
@@ -111,28 +111,6 @@ TIME_ZONE = "America/Fortaleza"
 USE_I18N = True
 
 USE_TZ = True
-
-PROJECT_ENVIRONMENT = config("PROJECT_ENVIRONMENT")
-if PROJECT_ENVIRONMENT == "local":
-    # Static files (CSS, JavaScript, Images)
-    STATIC_ROOT = os.path.join(os.path.dirname(PROJECT_ROOT), "statics")
-    STATIC_URL = "/statics/"
-    MEDIA_ROOT = os.path.join(os.path.dirname(PROJECT_ROOT), "media")
-    MEDIA_URL = "/media/"
-elif PROJECT_ENVIRONMENT == "develop":
-    # activate django-heroku.
-    import django_heroku
-
-    django_heroku.settings(locals())
-    # database in heroku
-    db_from_env = dj_database_url.config(conn_max_age=600)
-    DATABASES["default"].update(db_from_env)
-    # static and media files in heroku
-    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-    STATIC_URL = "/static/"
-    STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
