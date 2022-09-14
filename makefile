@@ -57,7 +57,7 @@ bash:
 	docker-compose run --rm $(ARGS) sh
 
 test:
-	docker-compose run --rm web pytest
+	docker-compose run --rm web pytest -s
 
 shell_plus:
 	docker-compose run --rm web python manage.py shell_plus
